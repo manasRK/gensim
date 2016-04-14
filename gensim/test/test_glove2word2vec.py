@@ -22,4 +22,4 @@ class TestGlove2Word2Vec(unittest.TestCase):
 
     def testConversion(self):
         output = check_output(['python', '-m', 'gensim.scripts.glove2word2vec', '-i', self.datapath, '-o', self.output_file])
-        self.assertEqual(output, b'')
+        self.assertEqual(output, '')
