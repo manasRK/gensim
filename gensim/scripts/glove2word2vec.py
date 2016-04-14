@@ -19,6 +19,7 @@ import logging
 import argparse
 
 import gensim
+from gensim import utils
 from smart_open import smart_open
 
 logger = logging.getLogger(__name__)
@@ -37,21 +38,12 @@ def glove2word2vec(glove_input_file, word2vec_output_file):
     """Convert `glove_input_file` in GloVe format into `word2vec_output_file in word2vec format."""
     num_lines, num_dims = get_glove_info(glove_input_file)
     logger.info("converting %i vectors from %s to %s", num_lines, glove_input_file, word2vec_output_file)
-    if sys.version_info < (3,):
-        with smart_open(word2vec_output_file, 'wb') as fout:
-            fout.write("%s %s\n" % (num_lines, num_dims))
-            with smart_open(glove_input_file, 'rb') as fin:
-                for line in fin:
-                    fout.write(line)
-        return num_lines, num_dims
-    else:
-        with smart_open(word2vec_output_file, 'w') as fout:
-            fout.write("%s %s\n" % (num_lines, num_dims))
-            with smart_open(glove_input_file, 'r') as fin:
-                for line in fin:
-                    fout.write(line)
-        return num_lines, num_dims
-
+    with smart_open(word2vec_output_file, 'wb') as fout:
+        fout.write(utils.to_utf8("%s %s\n" % (num_lines, num_dims)))
+        with smart_open(glove_input_file, 'rb') as fin:
+            for line in fin:
+                fout.write(line)
+    return num_lines, num_dims
 
 if __name__ == "__main__":
     logging.basicConfig(format='%(asctime)s : %(threadName)s : %(levelname)s : %(message)s', level=logging.INFO)
