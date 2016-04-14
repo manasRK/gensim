@@ -46,7 +46,6 @@ def glove2word2vec(glove_input_file, word2vec_output_file):
     return num_lines, num_dims
 
 if __name__ == "__main__":
-    logging.basicConfig(format='%(asctime)s : %(threadName)s : %(levelname)s : %(message)s', level=logging.INFO)
     logging.root.setLevel(level=logging.INFO)
     logger.info("running %s", ' '.join(sys.argv))
 
@@ -73,16 +72,12 @@ if __name__ == "__main__":
     logger.info('Model %s successfully loaded', model)
     try:
         logger.info('testing the model....')
-        if sys.version_info < (3,):
-            with smart_open(args.output, 'rb') as f:
-                seed_word1, seed_word2 = random.sample([line.split()[0] for line in f], 2)
-        else:
-            with smart_open(args.output, 'r') as f:
-                seed_word1, seed_word2 = random.sample([line.split()[0] for line in f], 2)
+        with smart_open(args.output, 'rb') as f:
+            seed_word1, seed_word2 = random.sample([line.split()[0] for line in utils.to_unicode(f, encoding = 'utf8')], 2)
         logger.info('top-10 most similar words to "%s" are: %s', seed_word1, model.most_similar(positive=[seed_word1], topn=10))
         logger.info('similarity score between %s and %s: %s', seed_word1, seed_word2, model.similarity(seed_word1, seed_word2))
     except:
-        logger.error('error encountered. checking for model file creation now....')
+        logger.exception('error encountered. checking for model file creation now....')
         if os.path.isfile(os.path.join(args.output)):
             logger.info('model file %s was created but could not be loaded.', args.output)
         else:
