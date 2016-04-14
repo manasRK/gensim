@@ -11,6 +11,7 @@ import unittest
 import os
 import sys
 import gensim
+from gensim import utils
 from gensim.utils import check_output
 
 
