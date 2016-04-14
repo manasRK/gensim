@@ -73,7 +73,8 @@ if __name__ == "__main__":
     try:
         logger.info('testing the model....')
         with smart_open(args.output, 'rb') as f:
-            seed_word1, seed_word2 = random.sample([line.split()[0] for line in utils.to_unicode(f, encoding = 'utf8')], 2)
+            lines = random.sample(utils.to_unicode(f.readlines(), encoding = 'utf8'), 2)
+            seed_word1, seed_word2 = [line.split()[0] for line in lines]
         logger.info('top-10 most similar words to "%s" are: %s', seed_word1, model.most_similar(positive=[seed_word1], topn=10))
         logger.info('similarity score between %s and %s: %s', seed_word1, seed_word2, model.similarity(seed_word1, seed_word2))
     except:
